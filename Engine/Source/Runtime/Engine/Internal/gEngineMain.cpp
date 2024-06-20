@@ -1,11 +1,11 @@
-#include <cstdint>
+#include <gngin_type.h>
 
 #include <Engine.h>
 #include <SingletonBase.h>
 
 namespace gngin
 {
-    int32_t gEngineMain(int argc, char** argv)
+    GnginSint32 gEngineMain(GnginSint32 argc, GnginChar8** argv)
     {
         if (!gngin::initializeEngine())
         {

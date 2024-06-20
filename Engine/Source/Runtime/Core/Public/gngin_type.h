@@ -7,17 +7,10 @@
 #include <cstdint>
 #include <cstdbool>
 
-#ifndef GNGIN_BOOL
-    #define GNGIN_BOOL bool
-#endif
+#define GNGIN_BOOL bool
+#define GNGIN_TRUE true
+#define GNGIN_FALSE false
 
-#ifndef GNGIN_TRUE
-    #define GNGIN_TRUE true
-#endif
-
-#ifndef GNGIN_FALSE
-    #define GNGIN_FALSE false
-#endif
 
 typedef char GnginChar8;
 typedef char16_t GnginChar16;

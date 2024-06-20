@@ -1,11 +1,13 @@
-#include <SingletonBase.h>
+#include "SingletonBase.h"
+
+#include <gngin_type.h>
 
 namespace
 {
-    constexpr uint32_t max_finalizers = 64;
+    constexpr GnginUint32 max_finalizers = 64;
     
     std::mutex finalizer_mutex;
-    uint32_t finalizer_num = 0;
+    GnginUint32 finalizer_num = 0;
     ::gngin::SingletonFinalizer::FinalizeFunction finalizers[max_finalizers];
 }
 
@@ -23,7 +25,7 @@ namespace gngin
     void SingletonFinalizer::finalizeAll()
     {
         std::lock_guard<std::mutex> lock(finalizer_mutex);
-        for (uint32_t i = finalizer_num - 1; i >= 0; --i)
+        for (GnginUint32 i = finalizer_num - 1; i >= 0; --i)
         {
             (*finalizers[i])();
         }

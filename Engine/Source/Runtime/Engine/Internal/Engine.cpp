@@ -1,16 +1,18 @@
+#include <gngin_type.h>
+
 #include <Engine.h>
 #include <Engine_Internal.h>
 #include <SingletonBase.cpp>
 
 namespace gngin
 {
-    bool engine_initialized = false;
+    GNGIN_BOOL engine_initialized = GNGIN_FALSE;
 
-    bool initializeEngine()
+    GNGIN_BOOL initializeEngine()
     {
         if (engine_initialized)
         {
-            return false;
+            return GNGIN_FALSE;
         }
 
         engine_initialized = GnginEngine::getInstance()->initialize();
@@ -26,7 +28,7 @@ namespace gngin
         }
 
         GnginEngine::getInstance()->finalize();
-        engine_initialized = false;
+        engine_initialized = GNGIN_FALSE;
     }
 
     bool isEngineInitialized()

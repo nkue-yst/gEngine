@@ -1,5 +1,7 @@
 #pragma once
 
+#include <gngin_type.h>
+
 namespace gngin
 {
     class GnginEngine;
@@ -7,7 +9,7 @@ namespace gngin
     /**
      * @brief エンジンを明示的に初期化
      */
-    bool initializeEngine();
+    GNGIN_BOOL initializeEngine();
 
     /**
      * @brief エンジンを明示的に終了
@@ -17,5 +19,5 @@ namespace gngin
     /**
      * @brief エンジンが初期化されているかどうかを取得
      */
-    bool isEngineInitialized();
+    GNGIN_BOOL isEngineInitialized();
 }

@@ -1,6 +1,6 @@
-#include <cstdint>
+#include <gngin_type.h>
 
 namespace gngin
 {
-    int32_t gEngineMain(int argc, char** argv);
+    GnginSint32 gEngineMain(GnginSint32 argc, GnginChar8** argv);
 }
