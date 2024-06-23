@@ -12,6 +12,7 @@ set(HEADER_SEARCH_PATH
     "${CMAKE_CURRENT_SOURCE_DIR}/Base"
     "${CMAKE_CURRENT_SOURCE_DIR}/Core/Public"
     "${CMAKE_CURRENT_SOURCE_DIR}/Engine/Public"
+    "${CMAKE_CURRENT_SOURCE_DIR}/Engine/Internal"
 )
 include_directories(${HEADER_SEARCH_PATH})
 

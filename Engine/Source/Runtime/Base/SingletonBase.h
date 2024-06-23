@@ -18,26 +18,26 @@ namespace gngin
     {
     private:
         static T *instance;
-        static std::once is_initialized;
+        static std::once_flag is_initialized;
 
     public:
         static T& getInstance()
         {
-            std::call_once(this->is_initialized, create);
-            return *this->instance;
+            std::call_once(SingletonBase<T>::is_initialized, create);
+            return *SingletonBase<T>::instance;
         }
 
     private:
         static void create()
         {
-            this->instance = new T();
+            SingletonBase<T>::instance = new T();
             SingletonFinalizer::addFinalizer(&SingletonBase<T>::destroy);
         }
 
         static void destroy()
         {
-            delete this->instance;
-            this->instance = nullptr;
+            delete SingletonBase<T>::instance;
+            SingletonBase<T>::instance = nullptr;
         }
     };
 

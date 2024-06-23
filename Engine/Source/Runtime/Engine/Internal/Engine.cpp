@@ -2,7 +2,7 @@
 
 #include <Engine.h>
 #include <Engine_Internal.h>
-#include <SingletonBase.cpp>
+#include <SingletonBase.h>
 
 namespace gngin
 {
