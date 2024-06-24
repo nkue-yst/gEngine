@@ -4,10 +4,10 @@
 
 namespace
 {
-    constexpr GnginUint32 max_finalizers = 64;
+    constexpr GnUint32 max_finalizers = 64;
     
     std::mutex finalizer_mutex;
-    GnginUint32 finalizer_num = 0;
+    GnUint32 finalizer_num = 0;
     ::gngin::SingletonFinalizer::FinalizeFunction finalizers[max_finalizers];
 }
 
@@ -25,7 +25,7 @@ namespace gngin
     void SingletonFinalizer::finalizeAll()
     {
         std::lock_guard<std::mutex> lock(finalizer_mutex);
-        for (GnginUint32 i = finalizer_num - 1; i >= 0; --i)
+        for (GnUint32 i = finalizer_num - 1; i >= 0; --i)
         {
             (*finalizers[i])();
         }

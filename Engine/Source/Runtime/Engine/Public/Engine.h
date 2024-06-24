@@ -9,7 +9,7 @@ namespace gngin
     /**
      * @brief エンジンを明示的に初期化
      */
-    GNGIN_BOOL initializeEngine();
+    GN_BOOL initializeEngine();
 
     /**
      * @brief エンジンを明示的に終了
@@ -19,5 +19,5 @@ namespace gngin
     /**
      * @brief エンジンが初期化されているかどうかを取得
      */
-    GNGIN_BOOL isEngineInitialized();
+    GN_BOOL isEngineInitialized();
 }

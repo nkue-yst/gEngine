@@ -6,13 +6,13 @@
 
 namespace gngin
 {
-    GNGIN_BOOL engine_initialized = GNGIN_FALSE;
+    GN_BOOL engine_initialized = GN_FALSE;
 
-    GNGIN_BOOL initializeEngine()
+    GN_BOOL initializeEngine()
     {
         if (engine_initialized)
         {
-            return GNGIN_FALSE;
+            return GN_FALSE;
         }
 
         engine_initialized = GnginEngine::getInstance()->initialize();
@@ -28,7 +28,7 @@ namespace gngin
         }
 
         GnginEngine::getInstance()->finalize();
-        engine_initialized = GNGIN_FALSE;
+        engine_initialized = GN_FALSE;
     }
 
     bool isEngineInitialized()

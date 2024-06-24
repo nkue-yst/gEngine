@@ -7,24 +7,24 @@
 #include <cstdint>
 #include <cstdbool>
 
-#define GNGIN_BOOL bool
-#define GNGIN_TRUE true
-#define GNGIN_FALSE false
+#define GN_BOOL bool
+#define GN_TRUE true
+#define GN_FALSE false
 
 
-typedef char GnginChar8;
-typedef char16_t GnginChar16;
-typedef char32_t GnginChar32;
+typedef char GnChar8;
+typedef char16_t GnChar16;
+typedef char32_t GnChar32;
 
-typedef std::int8_t GnginSint8;
-typedef std::int16_t GnginSint16;
-typedef std::int32_t GnginSint32;
-typedef std::int64_t GnginSint64;
+typedef std::int8_t GnSint8;
+typedef std::int16_t GnSint16;
+typedef std::int32_t GnSint32;
+typedef std::int64_t GnSint64;
 
-typedef std::uint8_t GnginUint8;
-typedef std::uint16_t GnginUint16;
-typedef std::uint32_t GnginUint32;
-typedef std::uint64_t GnginUint64;
+typedef std::uint8_t  GnUint8;
+typedef std::uint16_t GnUint16;
+typedef std::uint32_t GnUint32;
+typedef std::uint64_t GnUint64;
 
-typedef float GnginFloat32;
-typedef double GnginFloat64;
+typedef float  GnFloat32;
+typedef double GnFloat64;

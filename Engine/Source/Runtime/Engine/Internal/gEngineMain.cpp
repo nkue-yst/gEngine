@@ -5,7 +5,7 @@
 
 namespace gngin
 {
-    GnginSint32 gEngineMain(GnginSint32 argc, GnginChar8** argv)
+    GnSint32 gEngineMain(GnSint32 argc, GnChar8** argv)
     {
         if (!gngin::initializeEngine())
         {
