@@ -23,7 +23,7 @@ set(SOURCE_FILE_LIST
     "${CMAKE_CURRENT_SOURCE_DIR}/Engine/Internal/Engine.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/Engine/Internal/gEngineMain.cpp"
 )
-add_library(${PROJECT_NAME} STATIC ${SOURCE_FILE_LIST})
+add_library(${PROJECT_NAME} SHARED ${SOURCE_FILE_LIST})
 
 foreach(SOURCE_FILE ${SOURCE_FILE_LIST})
     message(STATUS "Add source file: ${SOURCE_FILE}")
