@@ -2,4 +2,5 @@
 **/Cargo.lock
 **/target/
 **/a.out
-build/
+
+**/Binaries/

@@ -7,6 +7,8 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall")
 
 project(gengine_runtime CXX)
 
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/x64/")
+
 ### Header search path ###
 set(HEADER_SEARCH_PATH
     "${CMAKE_CURRENT_SOURCE_DIR}/Base"
