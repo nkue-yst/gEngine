@@ -10,26 +10,39 @@ on:
 
 jobs:
   build:
-    runs-on: windows-latest
+    runs-on: ${{ matrix.config.os }}
+    strategy:
+      matrix:
+        config:
+          - { name: "Windows MSVC", os: windows-latest, cc: "cl", cxx: "cl"}
 
     steps:
-      - name: Checkout repository
+      - name: (1/6) Checkout repository
         uses: actions/checkout@v3
 
-      - name: Setup CMake
-        uses: lukka/get-cmake@latest
-   
-      - name: Setup Qt
-        uses: jurplel/install-qt-action@latest
+      - name: (2/6) Setup Qt
+        uses: jurplel/install-qt-action@v4
         with:
-          version: '6.8.0'
+          version: '5.15.2'
           host: 'windows'
           target: 'desktop'
-          arch: 'win64_msvc2022_64'
+          arch: 'win64_msvc2019_64'
           setup-python: 'false'
+          cache: 'true'
 
-      - name: Configure CMake
-        run: cmake -B Build -S . -G "Ninja"
+      - name: (3/6) Register environment variable
+        run: echo "QT_DIR=$QT_ROOT_DIR" >> $GITHUB_ENV
 
-      - name: Build
-        run: cmake --build Build --config Release
+      - name: (4/6) Add msbuild to PATH
+        uses: microsoft/setup-msbuild@v2
+
+      - name: (5/6) Setup MSVC
+        uses: ilammy/msvc-dev-cmd@v1
+
+      - name: (6/6) Build gEngine
+        run: |
+          cmake -B Build -S . -G "Visual Studio 17 2022" -A x64 -DCMAKE_PREFIX_PATH=$QT_DIR/lib/cmake
+          cd Build
+          msbuild /p:Configuration=Release /p:Platform=x64 gEngine.sln
+        env:
+          QT_DIR: ${{ env.QT_DIR }}

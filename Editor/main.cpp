@@ -2,7 +2,11 @@
 
 #include <QApplication>
 
-int main(int argc, char *argv[])
+#ifdef QT_NEEDS_QMAIN
+#define main qMain
+#endif
+
+int main(int argc, char **argv)
 {
     QApplication a(argc, argv);
     GnMainWindow w;

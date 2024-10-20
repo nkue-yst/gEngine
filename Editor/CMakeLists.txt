@@ -18,18 +18,18 @@ endif()
 
 if(NOT DEFINED ENV{QT_DIR})
     if(WIN32)
-        message(FATAL_ERROR "環境変数\"QT_DIR\"にQtのインストールパス(/path/to/msvc2022_64/)を設定してください。")
+        message(FATAL_ERROR "環境変数\"QT_DIR\"にQtのインストールパス(/path/to/msvc2019_64/)を設定してください。")
     elseif(APPLE)
 
     elseif(LINUX)
 
     endif()
 else()
-    set(CMAKE_PREFIX_PATH $ENV{QT_DIR})
+    set(CMAKE_PREFIX_PATH $ENV{QT_DIR} $ENV{Qt5_DIR} $ENV{QT_ROOT_DIR})
+    set(QT_DIR $ENV{QT_DIR})
 endif()
 
-find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets)
-find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets)
+find_package(Qt5 REQUIRED COMPONENTS Core Widgets)
 
 set(HEADERS
     GnMainWindow.h
@@ -46,14 +46,17 @@ set(FORMS
 
 add_executable(${PROJECT_NAME} ${HEADERS} ${SOURCES} ${FORMS})
 
-target_link_libraries(${PROJECT_NAME} PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)
+target_link_libraries(${PROJECT_NAME} PRIVATE
+    Qt5::Core
+    Qt5::Widgets
+)
 
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.
 # If you are developing for iOS or macOS you should consider setting an
 # explicit, fixed bundle identifier manually though.
-if(${QT_VERSION} VERSION_LESS 6.1.0)
-  set(BUNDLE_ID_OPTION MACOSX_BUNDLE_GUI_IDENTIFIER com.example.Editor)
-endif()
+# if(${QT_VERSION} VERSION_LESS 6.1.0)
+#   set(BUNDLE_ID_OPTION MACOSX_BUNDLE_GUI_IDENTIFIER com.example.Editor)
+# endif()
 
 set_target_properties(${PROJECT_NAME} PROPERTIES
     ${BUNDLE_ID_OPTION}
@@ -70,10 +73,6 @@ install(TARGETS ${PROJECT_NAME}
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
 )
 
-if(QT_VERSION_MAJOR EQUAL 6)
-    qt_finalize_executable(${PROJECT_NAME})
-endif()
-
 if(WIN32)
     if(MSVC)
         add_custom_command(TARGET ${PROJECT_NAME} PRE_BUILD
@@ -82,9 +81,9 @@ if(WIN32)
     endif()
 
     # windeploy
+    message("QT_DIR: ${QT_DIR}")
     add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
-        COMMAND ${WINDEPLOYQT_EXECUTABLE}
-            ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/$<CONFIG>/${PROJECT_NAME}.exe
+        COMMAND ${QT_DIR}/bin/windeployqt.exe ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/$<CONFIG>/${PROJECT_NAME}.exe
     )
 elseif(APPLE)
 
