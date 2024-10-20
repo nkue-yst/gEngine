@@ -9,11 +9,21 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+# Output directory
 set(BINARIES_FOLDER ${CMAKE_CURRENT_SOURCE_DIR}/../Binaries)
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${BINARIES_FOLDER})
+
+if(WIN32)
+    set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${BINARIES_FOLDER})
+endif()
 
 if(NOT DEFINED ENV{QT_DIR})
-    message(FATAL_ERROR "環境変数\"QT_DIR\"にQtのインストールパス(/path/to/msvc2022_64/)を設定してください。")
+    if(WIN32)
+        message(FATAL_ERROR "環境変数\"QT_DIR\"にQtのインストールパス(/path/to/msvc2022_64/)を設定してください。")
+    elseif(APPLE)
+
+    elseif(LINUX)
+
+    endif()
 else()
     set(CMAKE_PREFIX_PATH $ENV{QT_DIR})
 endif()
@@ -65,9 +75,16 @@ if(QT_VERSION_MAJOR EQUAL 6)
 endif()
 
 if(WIN32)
+    if(MSVC)
+        add_custom_command(TARGET ${PROJECT_NAME} PRE_BUILD
+            COMMAND ${CMAKE_COMMAND} -E echo "Building configuration: $<CONFIG>"
+        )
+    endif()
+
     # windeploy
     add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
-        COMMAND ${WINDEPLOYQT_EXECUTABLE} ${BINARIES_FOLDER}/${PROJECT_NAME}.exe
+        COMMAND ${WINDEPLOYQT_EXECUTABLE}
+            ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/$<CONFIG>/${PROJECT_NAME}.exe
     )
 elseif(APPLE)
 
