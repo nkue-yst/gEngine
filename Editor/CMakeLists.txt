@@ -26,7 +26,6 @@ if(NOT DEFINED ENV{QT_DIR})
     endif()
 else()
     set(CMAKE_PREFIX_PATH $ENV{QT_DIR} $ENV{Qt5_DIR} $ENV{QT_ROOT_DIR})
-    set(QT_DIR $ENV{QT_DIR})
 endif()
 
 find_package(Qt5 REQUIRED COMPONENTS Core Widgets)
@@ -51,13 +50,6 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
     Qt5::Widgets
 )
 
-# Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.
-# If you are developing for iOS or macOS you should consider setting an
-# explicit, fixed bundle identifier manually though.
-# if(${QT_VERSION} VERSION_LESS 6.1.0)
-#   set(BUNDLE_ID_OPTION MACOSX_BUNDLE_GUI_IDENTIFIER com.example.Editor)
-# endif()
-
 set_target_properties(${PROJECT_NAME} PROPERTIES
     ${BUNDLE_ID_OPTION}
     MACOSX_BUNDLE_BUNDLE_VERSION ${PROJECT_VERSION}
@@ -79,12 +71,6 @@ if(WIN32)
             COMMAND ${CMAKE_COMMAND} -E echo "Building configuration: $<CONFIG>"
         )
     endif()
-
-    # windeploy
-    message("QT_DIR: ${QT_DIR}")
-    add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
-        COMMAND ${QT_DIR}/bin/windeployqt.exe ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/$<CONFIG>/${PROJECT_NAME}.exe
-    )
 elseif(APPLE)
 
 elseif(LINUX)
