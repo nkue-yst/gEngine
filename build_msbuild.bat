@@ -9,3 +9,5 @@ cd Build
 msbuild /p:Configuration=Release /p:Platform=x64 /t:Build ALL_BUILD.vcxproj
 
 D:\Qt\5.15.2\msvc2019_64\bin\windeployqt.exe ..\Binaries\Release\gEngineEditor.exe
+
+pause

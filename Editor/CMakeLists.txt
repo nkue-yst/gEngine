@@ -48,6 +48,8 @@ add_executable(${PROJECT_NAME} ${HEADERS} ${SOURCES} ${FORMS})
 target_link_libraries(${PROJECT_NAME} PRIVATE
     Qt5::Core
     Qt5::Widgets
+
+    gEngineRuntime
 )
 
 set_target_properties(${PROJECT_NAME} PROPERTIES
