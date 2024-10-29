@@ -31,3 +31,20 @@ foreach(MODULE IN LISTS CLASSES_MODULE)
 endforeach()
 
 add_library(GnClassLibrary SHARED ${ClassLibrary_SOURCES})
+
+
+# "Core"
+## Core Modules
+set(CORE_MODULE
+    Main
+)
+
+## Build Core Module
+foreach(MODULE IN LISTS CORE_MODULE)
+    file(GLOB_RECURSE MODULE_HEADERS Core/${MODULE}/*.h)
+    file(GLOB_RECURSE MODULE_SOURCES Core/${MODULE}/*.cpp)
+
+    list(APPEND GnCore_SOURCES ${MODULE_HEADERS} ${MODULE_SOURCES})
+endforeach()
+
+add_library(GnCore SHARED ${GnCore_SOURCES})

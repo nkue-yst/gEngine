@@ -50,6 +50,7 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
     Qt5::Widgets
 
     GnClassLibrary
+    GnCore
 )
 
 set_target_properties(${PROJECT_NAME} PROPERTIES
