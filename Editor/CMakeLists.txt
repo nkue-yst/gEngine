@@ -12,9 +12,9 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 # Output directory
 set(BINARIES_FOLDER ${CMAKE_CURRENT_SOURCE_DIR}/../Binaries)
 
-if(WIN32)
-    set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${BINARIES_FOLDER})
-endif()
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/../Binaries/$<CONFIG>)
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/../Binaries/$<CONFIG>)
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/../Binaries/$<CONFIG>)
 
 if(NOT DEFINED ENV{QT_DIR})
     if(WIN32)
@@ -49,7 +49,7 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
     Qt5::Core
     Qt5::Widgets
 
-    gEngineRuntime
+    GnClassLibrary
 )
 
 set_target_properties(${PROJECT_NAME} PROPERTIES

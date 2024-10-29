@@ -3,7 +3,7 @@
 namespace gngin
 {
 
-class SGameInstance
+class GENGINE_RUNTIME_API SGameInstance
 {
 public:
     SGameInstance();
