@@ -48,3 +48,5 @@ foreach(MODULE IN LISTS CORE_MODULE)
 endforeach()
 
 add_library(GnCore SHARED ${GnCore_SOURCES})
+
+target_compile_definitions(GnCore PRIVATE -DBUILD_RUNTIME_DLL)
