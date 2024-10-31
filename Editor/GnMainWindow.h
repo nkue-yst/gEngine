@@ -1,4 +1,4 @@
-#ifndef GNMAINWINDOW_H
+﻿#ifndef GNMAINWINDOW_H
 #define GNMAINWINDOW_H
 
 #include <QMainWindow>

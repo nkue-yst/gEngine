@@ -1,4 +1,4 @@
-#include "GnMainWindow.h"
+﻿#include "GnMainWindow.h"
 #include "./ui_GnMainWindow.h"
 
 GnMainWindow::GnMainWindow(QWidget *parent)

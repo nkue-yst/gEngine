@@ -1,11 +1,11 @@
-#include "Main.h"
+ï»¿#include "Main.h"
 #include <iostream>
 
 int main(int argc, char** argv)
 {
     gngin::Main gn_main;
 
-    // “®ìŠm”F—p‚É“ü—Í‘Ò‚¿
+    // å‹•ä½œç¢ºèªç”¨ã«å…¥åŠ›å¾…ã¡
     int value;
     std::cin >> value;
 
