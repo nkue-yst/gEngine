@@ -2,6 +2,10 @@
 
 #include <cstdint>
 
+#ifndef GENGINE_RUNTIME_API
+#define GENGINE_RUNTIME_API
+#endif
+
 namespace gngin
 {
 
@@ -15,11 +19,3 @@ public:
 };
 
 }
-
-#ifdef GN_BUILD_WITH_MAIN
-int main(int argc, char** argv)
-{
-    Main gn_main;
-    return gn_main.Exec();
-}
-#endif
