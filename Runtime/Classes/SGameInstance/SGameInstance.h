@@ -1,5 +1,7 @@
 ﻿#pragma once
 
+#include "gn_dll.h"
+
 namespace gngin
 {
 

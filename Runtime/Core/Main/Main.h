@@ -1,10 +1,8 @@
 ﻿#pragma once
 
-#include <cstdint>
+#include "gn_dll.h"
 
-#ifndef GENGINE_RUNTIME_API
-#define GENGINE_RUNTIME_API
-#endif
+#include <cstdint>
 
 namespace gngin
 {
