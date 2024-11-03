@@ -5,9 +5,9 @@
 
 using namespace gngin;
 
-Application::Application()
+Application::Application(int argc, char** argv)
 {
-    impl_ = std::make_unique<ApplicationQt_Impl>();
+    impl_ = std::make_unique<ApplicationQt_Impl>(argc, argv);
 }
 
 Application::~Application()

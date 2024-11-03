@@ -11,7 +11,7 @@ namespace gngin
 class GENGINE_RUNTIME_API Application
 {
 public:
-    Application();
+    Application(int argc, char** argv);
     ~Application();
 
     bool Exec();

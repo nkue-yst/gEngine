@@ -1,10 +1,14 @@
 ﻿#include "ApplicationQt_Impl.h"
 
+#include "../CoreManager/CoreManager.h"
+#include "../Window/WindowQt_Impl.h"
+
 using namespace gngin;
 
-ApplicationQt_Impl::ApplicationQt_Impl()
-    : app_(nullptr)
+ApplicationQt_Impl::ApplicationQt_Impl(int argc, char** argv)
 {
+    app_  = new QApplication(argc, argv);
+    core_ = new CoreManager();
 }
 
 ApplicationQt_Impl::~ApplicationQt_Impl()
@@ -13,5 +17,7 @@ ApplicationQt_Impl::~ApplicationQt_Impl()
 
 bool ApplicationQt_Impl::Exec()
 {
-    return true;
+    core_->GetWindow()->Open();
+
+    return app_->exec();
 }
