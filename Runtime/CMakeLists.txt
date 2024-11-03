@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.16)
+﻿cmake_minimum_required(VERSION 3.16)
 
 project(gEngineRuntime)
 
@@ -9,6 +9,21 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/../Binaries/$<CONFIG>)
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/../Binaries/$<CONFIG>)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/../Binaries/$<CONFIG>)
+
+# Qt
+if(NOT DEFINED ENV{QT_DIR})
+    if(WIN32)
+        message(FATAL_ERROR "環境変数\"QT_DIR\"にQtのインストールパス(/path/to/msvc2019_64/)を設定してください。")
+    elseif(APPLE)
+
+    elseif(LINUX)
+
+    endif()
+else()
+    set(CMAKE_PREFIX_PATH $ENV{QT_DIR} $ENV{Qt5_DIR} $ENV{QT_ROOT_DIR})
+endif()
+
+find_package(Qt5 REQUIRED COMPONENTS Core Widgets)
 
 # Common include directories
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
@@ -35,9 +50,9 @@ add_library(GnClassLibrary SHARED ${ClassLibrary_SOURCES})
 # "Core"
 ## Core Modules
 set(CORE_MODULE
-    Main
-
+    Application
     CoreManager
+    Window
 )
 
 ## Build Core Module
@@ -49,5 +64,9 @@ foreach(MODULE IN LISTS CORE_MODULE)
 endforeach()
 
 add_library(GnCore SHARED ${GnCore_SOURCES})
+target_link_libraries(GnCore PRIVATE
+    Qt5::Core
+    Qt5::Widgets
+)
 
 add_definitions(-DGENGINE_RUNTIME_DLL)
