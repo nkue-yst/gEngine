@@ -12,6 +12,7 @@ public:
     WindowQt_Impl();
     ~WindowQt_Impl();
 
+    void SetWindowTitle(std::string title) override;
     bool Open() override;
 
 private:

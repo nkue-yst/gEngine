@@ -36,7 +36,7 @@ set(COMMON_SOURCES
 # "Classes"
 ## Classes Modules
 set(CLASSES_MODULE
-    SGameInstance
+    GameInstance
 )
 
 ## Build ClassLibrary
@@ -71,6 +71,11 @@ foreach(MODULE IN LISTS CORE_MODULE)
 endforeach()
 
 add_library(GnCore SHARED ${GnCore_SOURCES})
+
+foreach(MODULE IN LISTS CLASSES_MODULE)
+    target_include_directories(GnCore PRIVATE Classes/${MODULE})
+endforeach()
+
 target_link_libraries(GnCore PRIVATE
     Qt5::Core
     Qt5::Widgets

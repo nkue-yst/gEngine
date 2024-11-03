@@ -13,6 +13,11 @@ WindowQt_Impl::~WindowQt_Impl()
 {
 }
 
+void WindowQt_Impl::SetWindowTitle(std::string title)
+{
+    window_->setWindowTitle(QString::fromStdString(title));
+}
+
 bool WindowQt_Impl::Open()
 {
     window_->show();

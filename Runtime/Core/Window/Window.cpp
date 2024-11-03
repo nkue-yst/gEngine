@@ -15,6 +15,11 @@ Window::~Window()
 {
 }
 
+void Window::SetWindowTitle(std::string title)
+{
+    impl_->SetWindowTitle(title);
+}
+
 bool Window::Open()
 {
     return impl_->Open();

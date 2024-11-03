@@ -3,6 +3,7 @@
 #include "gn_dll.h"
 
 #include <memory>
+#include <string>
 
 namespace gngin
 {
@@ -14,6 +15,7 @@ public:
     Window();
     ~Window();
 
+    void SetWindowTitle(std::string title);
     bool Open();
 
 private:

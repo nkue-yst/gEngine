@@ -14,6 +14,8 @@ public:
     Application(int argc, char** argv);
     ~Application();
 
+    void SetGameInstance(class GameInstance* game_instance);
+
     bool Exec();
 
 private:

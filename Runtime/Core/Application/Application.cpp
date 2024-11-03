@@ -14,6 +14,11 @@ Application::~Application()
 {
 }
 
+void Application::SetGameInstance(GameInstance* game_instance)
+{
+    impl_->SetGameInstance(game_instance);
+}
+
 bool Application::Exec()
 {
     return impl_->Exec();
