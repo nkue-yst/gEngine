@@ -14,6 +14,8 @@ public:
 
     virtual void SetWindowTitle(std::string title) = 0;
     virtual bool Open() = 0;
+
+    virtual bool IsRunning() = 0;
 };
 
 }

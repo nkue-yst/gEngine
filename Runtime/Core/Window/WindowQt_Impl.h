@@ -15,6 +15,8 @@ public:
     void SetWindowTitle(std::string title) override;
     bool Open() override;
 
+    bool IsRunning() override;
+
 private:
     QWidget* window_;
 };

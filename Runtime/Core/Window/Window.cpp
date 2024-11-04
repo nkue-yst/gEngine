@@ -28,3 +28,8 @@ bool Window::Open()
 {
     return impl_->Open();
 }
+
+bool Window::IsRunning()
+{
+    return impl_->IsRunning();
+}

@@ -15,5 +15,7 @@ public:
     bool Exec() override;
 
 private:
+    void MainLoop();
+
     QApplication* app_;
 };

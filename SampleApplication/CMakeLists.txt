@@ -25,4 +25,7 @@ foreach(DLL IN LISTS GN_LIBRARIES)
     )
 endforeach()
 
-
+add_dependencies(${PROJECT_NAME}
+    GnClassLibrary
+    GnCore
+)

@@ -18,6 +18,8 @@ public:
     void SetWindowTitle(std::string title);
     bool Open();
 
+    bool IsRunning();
+
 private:
     std::unique_ptr<class Window_Impl> impl_;
 };

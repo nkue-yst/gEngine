@@ -24,3 +24,8 @@ bool WindowQt_Impl::Open()
 
     return true;
 }
+
+bool WindowQt_Impl::IsRunning()
+{
+    return window_->isVisible();
+}
