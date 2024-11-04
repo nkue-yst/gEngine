@@ -12,7 +12,7 @@ Window::Window()
 {
     impl_ = std::make_unique<WindowQt_Impl>();
 
-    Logging::message("GnCore: Instance of \"Window\" is created.");
+    Logging::message("GnCore: Instance of \"Window\" is created.", true);
 }
 
 Window::~Window()

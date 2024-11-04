@@ -15,6 +15,6 @@ int main(int argc, char** argv)
 
     g_instance->SetTitle("gEngine - SampleApplication");
 
-    Logging::message("Start \"SampleApplication\"...");
+    Logging::message("Start \"SampleApplication\"...", true);
     return app->Exec();
 }
