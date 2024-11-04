@@ -28,6 +28,8 @@ endif()
 
 find_package(Qt5 REQUIRED COMPONENTS Core Widgets)
 
+set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -DGENGINE_DEBUG")
+
 # Common include directories
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 set(COMMON_SOURCES
@@ -57,6 +59,7 @@ add_library(GnClassLibrary SHARED ${ClassLibrary_SOURCES})
 set(CORE_MODULE
     Application
     CoreManager
+    Logging
     Window
 )
 
