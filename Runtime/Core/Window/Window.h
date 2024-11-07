@@ -17,6 +17,7 @@ public:
 
     void SetWindowTitle(std::string title);
     bool Open();
+    void Update();
 
     bool IsRunning();
 

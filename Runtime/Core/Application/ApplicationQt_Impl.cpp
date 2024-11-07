@@ -3,8 +3,7 @@
 #include "GameInstance.h"
 
 #include "../CoreManager/CoreManager.h"
-#include "../Logging/Logging.h"
-#include "../Window/WindowQt_Impl.h"
+#include "../Window/WindowQtGL_Impl.h"
 
 #include <QThread>
 #include <QTimer>
@@ -45,10 +44,11 @@ void ApplicationQt_Impl::MainLoop()
         {
             continue;
         }
-        //Logging::message("Frame elapsed: " + std::to_string(frame_timer.elapsed()), true);
         frame_timer.restart();
 
-        /* フレーム更新処理 */
+        // TODO: 描画更新
+        core_->GetWindow()->Update();
+
         QThread::usleep(500);
     }
 }
