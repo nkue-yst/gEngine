@@ -2,27 +2,33 @@
 
 #include "Window.h"
 
-#include "../Renderer/Renderer.h"
+#include <QOpenGLWidget>
+#include <QWindow>
 
 #include <string>
 
 namespace gngin
 {
 
-class GENGINE_RUNTIME_API Window_Impl
+class GENGINE_RUNTIME_API Window_Impl : public QOpenGLWidget
 {
 public:
-    Window_Impl();
-    ~Window_Impl() = default;
+    explicit Window_Impl(QWidget* parent = nullptr, Qt::WindowFlags f = Qt::WindowFlags());
+    ~Window_Impl();
 
-    virtual void SetWindowTitle(std::string title) = 0;
-    virtual bool Open() = 0;
-    virtual void Update() = 0;
+    void SetWindowTitle(std::string title);
+    bool Open();
+    void Update();
 
-    virtual bool IsRunning() = 0;
+    bool IsRunning();
+
+    /* OpenGL Functions */
+    void initializeGL() override;
+    void resizeGL(int w, int h) override;
+    void paintGL() override;
 
 protected:
     std::unique_ptr<class Renderer> renderer_;
 };
 
-}
+}  // namespace gngin

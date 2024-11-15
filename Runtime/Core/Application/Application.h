@@ -22,4 +22,4 @@ private:
     std::unique_ptr<class Application_Impl> impl_;
 };
 
-}
+}  // namespace gngin

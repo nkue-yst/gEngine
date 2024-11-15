@@ -2,22 +2,28 @@
 
 #include "Application.h"
 
+#include <QApplication>
+
 namespace gngin
 {
 
 class GENGINE_RUNTIME_API Application_Impl
 {
 public:
-    Application_Impl() :core_(nullptr), game_instance_(nullptr) {}
-    virtual ~Application_Impl() = default;
+    Application_Impl(int argc, char** argv);
+    ~Application_Impl();
 
     void SetGameInstance(class GameInstance* game_instance);
 
-    virtual bool Exec() = 0;
+    bool Exec();
 
-protected:
+private:
+    void MainLoop();
+
     class CoreManager* core_;
     class GameInstance* game_instance_;
+
+    QApplication* app_;
 };
 
-}
+}  // namespace gngin

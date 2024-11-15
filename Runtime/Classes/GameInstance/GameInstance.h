@@ -14,7 +14,7 @@ public:
     ~GameInstance();
 
     void SetTitle(std::string title) { title_ = title; }
-    
+
     std::string GetTitle() { return title_; }
 
 private:
