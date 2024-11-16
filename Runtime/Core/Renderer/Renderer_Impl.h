@@ -20,4 +20,4 @@ public:
     void Draw();
 };
 
-}
+}  // namespace gngin

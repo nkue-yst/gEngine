@@ -24,8 +24,6 @@ public:
 
     /* OpenGL Functions */
     void initializeGL() override;
-    void resizeGL(int w, int h) override;
-    void paintGL() override;
 
 protected:
     std::unique_ptr<class Renderer> renderer_;

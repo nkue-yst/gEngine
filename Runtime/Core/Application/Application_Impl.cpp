@@ -3,7 +3,7 @@
 #include "GameInstance.h"
 
 #include "../CoreManager/CoreManager.h"
-#include "../Window/Window_Impl.h"
+#include "../Window/Window.h"
 
 #include <QThread>
 #include <QTimer>

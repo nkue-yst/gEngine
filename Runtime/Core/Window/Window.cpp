@@ -6,7 +6,7 @@
 
 using namespace gngin;
 
-/* ウィンドウクラス(実装は Window_Impl クラスへ移譲) */
+/* ウィンドウクラス(実装はWindow_Implクラスへ移譲) */
 Window::Window()
 {
     impl_ = std::make_unique<Window_Impl>();
