@@ -3,6 +3,8 @@
 
 #include <QMainWindow>
 
+#include "Viewport.h"
+
 QT_BEGIN_NAMESPACE
 namespace Ui {
 class GnMainWindow;
@@ -19,5 +21,7 @@ public:
 
 private:
     Ui::GnMainWindow *ui;
+
+    Viewport* viewport_widget;
 };
 #endif // GNMAINWINDOW_H

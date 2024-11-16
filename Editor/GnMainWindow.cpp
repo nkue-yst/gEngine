@@ -1,7 +1,7 @@
 ﻿#include "GnMainWindow.h"
 #include "./ui_GnMainWindow.h"
 
-#include "PIEWidget.h"
+#include <QToolButton>
 
 GnMainWindow::GnMainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -9,9 +9,20 @@ GnMainWindow::GnMainWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
-    /* DockWidgetの追加 */
-    PIEWidget* pie_widget = new PIEWidget(this);
-    this->addDockWidget(Qt::DockWidgetArea::LeftDockWidgetArea, pie_widget);
+    /* メインウィンドウの設定 */
+    this->setWindowTitle("gEngine Editor");
+    this->setMinimumSize(360, 240);
+    this->resize(1280, 720);
+
+    /* ビューポートをセントラルウィジェットとしてセット */
+    viewport_widget = new Viewport(this);
+    viewport_widget->setContentsMargins(0, 0, 0, 0);
+    viewport_widget->setMinimumSize(360, 240);
+    this->setCentralWidget(viewport_widget);
+
+    /* ツールバーボタンの追加 */
+    QToolButton* pie_begin_button = new QToolButton(this);
+    ui->toolBar->addWidget(pie_begin_button);
 }
 
 GnMainWindow::~GnMainWindow()

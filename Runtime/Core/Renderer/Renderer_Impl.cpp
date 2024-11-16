@@ -20,4 +20,7 @@ void Renderer_Impl::Initialize()
 void Renderer_Impl::Draw()
 {
     glClear(GL_COLOR_BUFFER_BIT);
+
+    // ここでインゲームオブジェクトの描画を行う
+    //foreach(ObjectsInGame)...
 }

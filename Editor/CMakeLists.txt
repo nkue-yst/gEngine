@@ -33,27 +33,25 @@ find_package(Qt5 REQUIRED COMPONENTS Core Widgets)
 set(HEADERS
     GnMainWindow.h
 
-    DockWidget/PIEWidget.h
+    Viewport/Viewport.h
 )
 
 set(SOURCES
     main.cpp
     GnMainWindow.cpp
 
-    DockWidget/PIEWidget.cpp
+    Viewport/Viewport.cpp
 )
 
 set(FORMS
     GnMainWindow.ui
-
-    DockWidget/PIEWidget.ui
 )
 
 add_executable(${PROJECT_NAME} ${HEADERS} ${SOURCES} ${FORMS})
 
 target_include_directories(${PROJECT_NAME} PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}
-    DockWidget
+    Viewport
 )
 
 # Core modules

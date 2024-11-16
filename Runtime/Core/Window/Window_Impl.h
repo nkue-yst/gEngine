@@ -12,6 +12,8 @@ namespace gngin
 
 class GENGINE_RUNTIME_API Window_Impl : public QOpenGLWidget
 {
+Q_OBJECT
+
 public:
     explicit Window_Impl(QWidget* parent = nullptr, Qt::WindowFlags f = Qt::WindowFlags());
     ~Window_Impl();
@@ -24,6 +26,7 @@ public:
 
     /* OpenGL Functions */
     void initializeGL() override;
+    void paintGL() override;
 
 protected:
     std::unique_ptr<class Renderer> renderer_;

@@ -28,7 +28,7 @@ bool Window_Impl::Open()
 
 void Window_Impl::Update()
 {
-    renderer_->Draw();
+    this->update();
 }
 
 bool Window_Impl::IsRunning()
@@ -39,4 +39,9 @@ bool Window_Impl::IsRunning()
 void Window_Impl::initializeGL()
 {
     renderer_->Initialize();
+}
+
+void Window_Impl::paintGL()
+{
+    renderer_->Draw();
 }
