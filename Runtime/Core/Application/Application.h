@@ -4,6 +4,8 @@
 
 #include <memory>
 
+#include <QApplication>
+
 namespace gngin
 {
 
@@ -19,7 +21,12 @@ public:
     bool Exec();
 
 private:
-    std::unique_ptr<class Application_Impl> impl_;
+    void MainLoop();
+
+    class CoreManager* core_;
+    class GameInstance* game_instance_;
+
+    QApplication* app_;
 };
 
 }  // namespace gngin

@@ -13,15 +13,23 @@ QT_END_NAMESPACE
 
 class GnMainWindow : public QMainWindow
 {
-    Q_OBJECT
+Q_OBJECT
 
 public:
     GnMainWindow(QWidget *parent = nullptr);
     ~GnMainWindow();
 
+private slots:
+    void TogglePlayInEditor(bool checked);
+
 private:
+    void BeginPlayInEditor();
+    void StopPlayInEditor();
+
     Ui::GnMainWindow *ui;
 
     Viewport* viewport_widget;
+    QWidget* dummy_viewport;
 };
+
 #endif // GNMAINWINDOW_H

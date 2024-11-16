@@ -34,6 +34,7 @@ set(HEADERS
     GnMainWindow.h
 
     Viewport/Viewport.h
+    Viewport/ViewportRenderer.h
 )
 
 set(SOURCES
@@ -41,13 +42,18 @@ set(SOURCES
     GnMainWindow.cpp
 
     Viewport/Viewport.cpp
+    Viewport/ViewportRenderer.cpp
 )
 
 set(FORMS
     GnMainWindow.ui
 )
 
-add_executable(${PROJECT_NAME} ${HEADERS} ${SOURCES} ${FORMS})
+qt5_add_resources(RESOURCES
+    Resources/Resource.qrc
+)
+
+add_executable(${PROJECT_NAME} ${HEADERS} ${SOURCES} ${FORMS} ${RESOURCES})
 
 target_include_directories(${PROJECT_NAME} PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}

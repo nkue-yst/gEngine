@@ -1,15 +1,12 @@
 ﻿#include "Renderer.h"
 
-#include "Renderer_Impl.h"
-
 #include "../Logging/Logging.h"
 
 using namespace gngin;
 
-Renderer::Renderer()
+Renderer::Renderer(QObject* parent)
+    : QObject(parent)
 {
-    impl_ = std::make_unique<Renderer_Impl>();
-
     Logging::message("GnCore: Instance of \"Renderer\" is created.", true);
 }
 
@@ -19,10 +16,14 @@ Renderer::~Renderer()
 
 void Renderer::Initialize()
 {
-    impl_->Initialize();
+    initializeOpenGLFunctions();
+    glClearColor(0.5f, 0.8f, 0.5f, 1.0f);
 }
 
 void Renderer::Draw()
 {
-    impl_->Draw();
+    glClear(GL_COLOR_BUFFER_BIT);
+
+    // ここでインゲームオブジェクトの描画を行う
+    //foreach(ObjectsInGame)...
 }

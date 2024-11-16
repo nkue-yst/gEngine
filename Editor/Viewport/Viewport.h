@@ -3,8 +3,6 @@
 
 #include <QOpenGLWidget>
 
-#include "Renderer/Renderer.h"
-
 class Viewport : public QOpenGLWidget
 {
 Q_OBJECT
@@ -18,7 +16,7 @@ public:
     void paintGL() override;
 
 private:
-    std::unique_ptr<class gngin::Renderer> renderer_;
+    std::unique_ptr<class ViewportRenderer> renderer_;
 };
 
 #endif // VIEWPORT_H

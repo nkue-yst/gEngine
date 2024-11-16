@@ -4,20 +4,22 @@
 
 #include <memory>
 
+#include <QObject>
+#include <QOpenGLFunctions>
+
 namespace gngin
 {
 
-class GENGINE_RUNTIME_API Renderer
+class GENGINE_RUNTIME_API Renderer : public QObject, protected QOpenGLFunctions
 {
+Q_OBJECT
+
 public:
-    Renderer();
+    explicit Renderer(QObject* parent = nullptr);
     ~Renderer();
 
     void Initialize();
     void Draw();
-
-private:
-    std::unique_ptr<class Renderer_Impl> impl_;
 };
 
 }  // namespace gngin

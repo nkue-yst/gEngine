@@ -1,10 +1,9 @@
 #include "Viewport.h"
-
-#include "Window/Window_Impl.h"
+#include "ViewportRenderer.h"
 
 Viewport::Viewport(QWidget *parent)
 {
-    renderer_ = std::make_unique<gngin::Renderer>();
+    renderer_ = std::make_unique<ViewportRenderer>(this);
 
     /* レイアウト設定 */
     this->setSizePolicy(QSizePolicy::Policy::Preferred, QSizePolicy::Policy::Preferred);
