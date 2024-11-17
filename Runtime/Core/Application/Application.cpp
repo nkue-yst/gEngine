@@ -1,6 +1,6 @@
 ﻿#include "Application.h"
 
-#include "GameInstance/GameInstance.h"
+#include "Classes/GameInstance/GameInstance.h"
 
 #include "../CoreManager/CoreManager.h"
 #include "../Logging/Logging.h"
@@ -12,10 +12,18 @@
 
 using namespace gngin;
 
-Application::Application(int argc, char** argv)
+Application::Application(int argc, char** argv, bool isPIE)
     : game_instance_(nullptr)
+    , is_PIE_(isPIE)
 {
-    app_ = new QApplication(argc, argv);
+    if (!isPIE)
+    {
+        app_ = new QApplication(argc, argv);
+    }
+    else
+    {
+        app_ = qApp;
+    }
     core_ = new CoreManager();
 
     Logging::message("GnCore: Instance of \"Application\" is created.", true);
@@ -32,12 +40,20 @@ void Application::SetGameInstance(GameInstance* game_instance)
 
 bool Application::Exec()
 {
-    core_->GetWindow()->SetWindowTitle(game_instance_->GetTitle());
-    core_->GetWindow()->Open();
+    if (!is_PIE_)
+    {
+        core_->GetWindow()->SetWindowTitle(game_instance_->GetTitle());
+        core_->GetWindow()->Open();
+    }
 
     this->MainLoop();
 
     return true;
+}
+
+Window* Application::GetWindowRef()
+{
+    return core_->GetWindow();
 }
 
 void Application::MainLoop()

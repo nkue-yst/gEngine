@@ -11,12 +11,14 @@ namespace gngin
 class GENGINE_RUNTIME_API Application
 {
 public:
-    Application(int argc, char** argv);
+    Application(int argc, char** argv, bool isPIE = false);
     ~Application();
 
     void SetGameInstance(class GameInstance* game_instance);
 
     bool Exec();
+
+    class Window* GetWindowRef();
 
 private:
     void MainLoop();
@@ -25,6 +27,8 @@ private:
     class GameInstance* game_instance_;
 
     QApplication* app_;
+
+    bool is_PIE_;
 };
 
 }  // namespace gngin

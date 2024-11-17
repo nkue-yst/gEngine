@@ -1,13 +1,20 @@
 ﻿#include "GnMainWindow.h"
 #include "./ui_GnMainWindow.h"
 
+#include "gengine.h"
+#include "Classes/GameInstance/GameInstance.h"
+
+#include "Application/Application.h"
+#include "Window/Window.h"
+
 #include <QAction>
 #include <QPixMap>
+
+using namespace gngin;
 
 GnMainWindow::GnMainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::GnMainWindow)
-    , dummy_viewport(new QWidget(this))
 {
     ui->setupUi(this);
 
@@ -60,15 +67,28 @@ void GnMainWindow::TogglePlayInEditor(bool checked)
 void GnMainWindow::BeginPlayInEditor()
 {
     QWidget* old_central_widget = this->takeCentralWidget();
-    old_central_widget->setParent(nullptr);
+    if (old_central_widget)
+    {
+        old_central_widget->setParent(nullptr);
+    }
 
-    this->setCentralWidget(dummy_viewport);
+    /* アプリをPIEモードで実行 */
+    Engine::InitializeApplication(0, nullptr, true);
+    GameInstance game_instance;
+    game_instance.SetTitle("SampleApplication_PIE");
+
+    Engine::RegisterGameInstance(&game_instance);
+    Engine::LaunchApplication();
+
+    auto* window_ref = Engine::GetApplicationRef()->GetWindowRef();
+    window_ref->setParent(this);
+    this->setCentralWidget(window_ref);
 }
 
 void GnMainWindow::StopPlayInEditor()
 {
-    QWidget* old_central_widget = this->takeCentralWidget();
-    old_central_widget->setParent(nullptr);
-
     this->setCentralWidget(viewport_widget);
+
+    /* PIEモードで実行中のアプリを停止 */
+    Engine::InitializeApplication(0, nullptr, true);
 }

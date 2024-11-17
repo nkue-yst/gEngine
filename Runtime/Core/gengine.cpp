@@ -1,5 +1,7 @@
 #include "gengine.h"
 
+#include "Classes/GameInstance/GameInstance.h"
+
 #include "Application/Application.h"
 
 using namespace gngin;
@@ -9,7 +11,7 @@ namespace
     static class Application* app = nullptr;
 }
 
-bool Engine::InitializeApplication(int argc, char** argv)
+bool Engine::InitializeApplication(int argc, char** argv, bool in_editor)
 {
     if (app)
     {
@@ -17,7 +19,7 @@ bool Engine::InitializeApplication(int argc, char** argv)
         app = nullptr;
     }
 
-    app = new Application(argc, argv);
+    app = new Application(argc, argv, in_editor);
 
     return true;
 }
@@ -30,4 +32,9 @@ void Engine::RegisterGameInstance(GameInstance* instance)
 int Engine::LaunchApplication()
 {
     return (app->Exec() ? 0 : 1);
+}
+
+Application* Engine::GetApplicationRef()
+{
+    return app;
 }

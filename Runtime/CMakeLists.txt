@@ -9,6 +9,8 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTORCC ON)
 
+set(CMAKE_INCLUDE_CURRENT_DIR ON)
+
 # Build Configuration
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/../Binaries/$<CONFIG>)
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/../Binaries/$<CONFIG>)
@@ -80,8 +82,6 @@ foreach(MODULE IN LISTS CORE_MODULE)
 endforeach()
 
 add_library(GnCore SHARED ${GnCore_SOURCES})
-
-target_include_directories(GnCore PRIVATE Classes)
 
 target_link_libraries(GnCore PRIVATE
     Qt5::Core

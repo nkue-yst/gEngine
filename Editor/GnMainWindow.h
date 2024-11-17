@@ -29,7 +29,6 @@ private:
     Ui::GnMainWindow *ui;
 
     Viewport* viewport_widget;
-    QWidget* dummy_viewport;
 };
 
 #endif // GNMAINWINDOW_H
