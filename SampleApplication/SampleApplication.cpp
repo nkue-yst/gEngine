@@ -1,5 +1,4 @@
-﻿#include "Core/Application/Application.h"
-#include "Core/Logging/Logging.h"
+﻿#include "gengine.h"
 
 #include "GameInstance/GameInstance.h"
 
@@ -7,14 +6,12 @@ using namespace gngin;
 
 int main(int argc, char** argv)
 {
-    Application* app = new Application(argc, argv);
+    Engine::InitializeApplication(argc, argv);
 
-    /* ゲームインスタンスの設定 */
-    GameInstance* g_instance = new GameInstance();
-    app->SetGameInstance(g_instance);
+    GameInstance game_instance;
+    game_instance.SetTitle("SampleApplication");
 
-    g_instance->SetTitle("gEngine - SampleApplication");
+    Engine::RegisterGameInstance(&game_instance);
 
-    Logging::message("Start \"SampleApplication\"...", true);
-    return app->Exec();
+    return Engine::LaunchApplication();
 }

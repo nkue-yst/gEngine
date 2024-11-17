@@ -1,6 +1,6 @@
 ﻿#include "Application.h"
 
-#include "GameInstance.h"
+#include "GameInstance/GameInstance.h"
 
 #include "../CoreManager/CoreManager.h"
 #include "../Logging/Logging.h"
@@ -13,6 +13,7 @@
 using namespace gngin;
 
 Application::Application(int argc, char** argv)
+    : game_instance_(nullptr)
 {
     app_ = new QApplication(argc, argv);
     core_ = new CoreManager();

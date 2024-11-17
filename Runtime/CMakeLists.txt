@@ -61,6 +61,7 @@ add_library(GnClassLibrary SHARED ${ClassLibrary_SOURCES})
 # "Core"
 ## Core Modules
 set(CORE_MODULE
+    .
     Application
     CoreManager
     Logging
@@ -80,9 +81,7 @@ endforeach()
 
 add_library(GnCore SHARED ${GnCore_SOURCES})
 
-foreach(MODULE IN LISTS CLASSES_MODULE)
-    target_include_directories(GnCore PRIVATE Classes/${MODULE})
-endforeach()
+target_include_directories(GnCore PRIVATE Classes)
 
 target_link_libraries(GnCore PRIVATE
     Qt5::Core

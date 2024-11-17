@@ -10,6 +10,7 @@ add_executable(${PROJECT_NAME} SampleApplication.cpp)
 target_include_directories(${PROJECT_NAME} PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/../Runtime
     ${CMAKE_CURRENT_SOURCE_DIR}/../Runtime/Classes
+    ${CMAKE_CURRENT_SOURCE_DIR}/../Runtime/Core
 )
 
 set(GN_LIBRARIES

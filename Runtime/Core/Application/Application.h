@@ -2,8 +2,6 @@
 
 #include "gn_dll.h"
 
-#include <memory>
-
 #include <QApplication>
 
 namespace gngin
