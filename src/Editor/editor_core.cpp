@@ -554,7 +554,8 @@ namespace gengine::editor
     void EditorCore::ReleaseVm()
     {
         if (vm_id_.has_value()) {
-            vm_actions_.Detach(*vm_id_);
+            // 登録がすでに消えていても、VM本体と選択中の識別子は破棄する。
+            static_cast<void>(vm_actions_.Detach(*vm_id_));
         }
         vm_.reset();
         vm_id_.reset();
@@ -755,7 +756,8 @@ namespace gengine::editor
             TickRunner();
         }
         if (active_job_.has_value()) {
-            Cancel({*active_job_});
+            // 取消し結果にかかわらず、終了時は子プロセスの回収まで行う。
+            static_cast<void>(Cancel({*active_job_}));
             // process_の破棄は子の終了を待つ。完了を偽装してから終了しない。
             process_.reset();
             build_.reset();

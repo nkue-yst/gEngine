@@ -772,7 +772,11 @@ namespace
             }
 
             // 受付済みの操作を実行して結果を取り出す。コンパイル本体の完了はここでは待たない。
-            dispatcher.Pump();
+            const auto processed = dispatcher.Pump();
+            if (processed.has_value() == false) {
+                ShowError(processed.error().code + ": " + processed.error().reason);
+                return {};
+            }
             const auto operation = dispatcher.Lookup(accepted->operation_id).operation;
             if (operation->error.has_value()) {
                 ShowError(operation->error->code + ": " + operation->error->reason);

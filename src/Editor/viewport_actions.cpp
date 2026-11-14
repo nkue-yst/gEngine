@@ -165,7 +165,10 @@ namespace gengine::editor
         if (submitted.has_value() == false) {
             throw std::runtime_error(submitted.error().reason);
         }
-        dispatcher_.Pump();
+        const auto processed = dispatcher_.Pump();
+        if (processed.has_value() == false) {
+            throw std::runtime_error(processed.error().reason);
+        }
         const auto operation = dispatcher_.Lookup(submitted->operation_id).operation;
         if (operation->error) {
             throw std::runtime_error(operation->error->reason);

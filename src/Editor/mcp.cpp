@@ -119,7 +119,10 @@ namespace gengine::editor
             return ToolError(accepted.error());
         }
 
-        dispatcher.Pump();
+        const auto processed = dispatcher.Pump();
+        if (processed.has_value() == false) {
+            return ToolError(processed.error());
+        }
         const auto operation = dispatcher.Lookup(accepted->operation_id).operation;
         if (operation->error.has_value()) {
             return ToolError(*operation->error);
