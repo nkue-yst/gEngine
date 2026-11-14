@@ -1,0 +1,31 @@
+add_library(gengine_actions STATIC action_types.hpp actions.hpp actions.cpp vm_actions.hpp vm_actions.cpp collection_types.hpp collection_actions.cpp metrics_types.hpp)
+add_library(gEngine::Actions ALIAS gengine_actions)
+target_include_directories(gengine_actions PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}")
+target_compile_features(gengine_actions PUBLIC cxx_std_23)
+target_compile_options(gengine_actions PRIVATE /W4 /permissive- /utf-8 /Zc:__cplusplus)
+target_link_libraries(gengine_actions PUBLIC gVM::Runtime)
+source_group(TREE "${CMAKE_CURRENT_SOURCE_DIR}" FILES action_types.hpp actions.hpp actions.cpp vm_actions.hpp vm_actions.cpp collection_types.hpp collection_actions.cpp metrics_types.hpp)
+
+# プロジェクト・ジョブ・MCPの共通処理を、GUIから独立して試験できるライブラリにする。
+set(template_file "${PROJECT_SOURCE_DIR}/apps/Editor/templates/game.glang")
+set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS "${template_file}")
+file(READ "${template_file}" GENGINE_PROJECT_TEMPLATE)
+file(READ "${PROJECT_SOURCE_DIR}/samples/shooter2d/game.glang" GENGINE_GAME2D_TEMPLATE)
+file(READ "${PROJECT_SOURCE_DIR}/samples/shooter3d/game.glang" GENGINE_GAME3D_TEMPLATE)
+set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS "${PROJECT_SOURCE_DIR}/samples/shooter2d/game.glang" "${PROJECT_SOURCE_DIR}/samples/shooter3d/game.glang")
+configure_file(project_template.hpp.in project_template.hpp @ONLY)
+add_library(gengine_editor_core STATIC editor_core.hpp editor_core.cpp platform.hpp platform.cpp json.hpp json.cpp mcp.hpp mcp.cpp)
+target_sources(gengine_editor_core PRIVATE child_process.hpp child_process.cpp build_types.hpp build_pipeline.hpp build_pipeline.cpp build_actions.cpp)
+target_sources(gengine_editor_core PRIVATE product.hpp product.cpp)
+target_include_directories(gengine_editor_core PRIVATE "${CMAKE_CURRENT_BINARY_DIR}")
+target_link_libraries(gengine_editor_core PUBLIC gEngine::Actions PRIVATE bcrypt ole32)
+target_include_directories(gengine_editor_core SYSTEM PUBLIC "${PROJECT_SOURCE_DIR}/ThirdParty")
+target_compile_definitions(gengine_editor_core PUBLIC NOMINMAX WIN32_LEAN_AND_MEAN UNICODE _UNICODE GENGINE_VERSION="${PROJECT_VERSION}")
+target_compile_options(gengine_editor_core PRIVATE /W4 /WX /permissive- /utf-8 /Zc:__cplusplus)
+
+target_sources(gengine_editor_core PRIVATE asset_actions.cpp asset_types.hpp play_actions.cpp play_types.hpp viewport_actions.cpp viewport_types.hpp
+    viewport3d_actions.cpp picking3d.cpp picking3d.hpp)
+target_link_libraries(gengine_editor_core PUBLIC gengine_play_window)
+
+target_sources(gengine_editor_core PRIVATE scene_actions.cpp scene_actions.hpp)
+target_link_libraries(gengine_editor_core PUBLIC gengine_scene)

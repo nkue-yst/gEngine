@@ -1,0 +1,12 @@
+[submodule "rEngine"]
+	path = components/rEngine
+	url = https://github.com/nkue-yst/rEngine.git
+[submodule "aEngine"]
+	path = components/aEngine
+	url = https://github.com/nkue-yst/aEngine.git
+[submodule "BinPackLib"]
+	path = components/BinPackLib
+	url = https://github.com/nkue-yst/BinPackLib.git
+[submodule "gLang"]
+	path = components/gLang
+	url = https://github.com/nkue-yst/gLang.git

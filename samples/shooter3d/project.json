@@ -1,0 +1,10 @@
+{
+  "format_version": 1,
+  "project_id": "shooter3d",
+  "sources": [
+    "game.glang"
+  ],
+  "scenes": [
+    "scene.json"
+  ]
+}

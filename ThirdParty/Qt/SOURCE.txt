@@ -1,0 +1,16 @@
+Qt 6.12.0 source and replacement
+
+The Editor uses unmodified Qt Core, Gui, Widgets and qwindows.dll through dynamic linking, under LGPL version 3.
+Qt is copyright The Qt Company Ltd. and other contributors. License texts and third-party notices are in licenses/Qt-NOTICES.txt.
+gEngine's own license does not replace these third-party licenses.
+
+Corresponding source (Qt Base, including bundled third-party code and build scripts):
+https://download.qt.io/official_releases/qt/6.12/6.12.0/submodules/qtbase-everywhere-src-6.12.0.tar.xz
+SHA-256: a951bd163c7b80fc6b8c88d7668fb56abf91c152373e13c10666763238131307
+Upstream source commit: 025bdad181de241e81bf853c8a2d7bf3d19261a9
+The source is also placed in Sources/ when GENGINE_QT_SOURCE_ARCHIVE is configured.
+Binary distributors must provide this corresponding source with the binary download, or equivalent access from the same place. Do not rely solely on a third-party link remaining available.
+
+Replacement: close the Editor, preserve the current DLLs, and replace Qt6Core.dll, Qt6Gui.dll, Qt6Widgets.dll and platforms/qwindows.dll together with an ABI-compatible Windows x64 MSVC dynamic Qt build. Both gEngine Debug and Release use Qt release DLLs to match the shared /MD CRT required by the Rust runtime. Do not substitute debug DLLs ending in d. qt.conf keeps plugin lookup relative to this Editor directory. No signature or hash check prevents replacement.
+Rebuilding Qt: use the included source's configure script, an x64 MSVC environment and CMake. Configure a shared build with the same compiler ABI and configuration, then build and install Core/Gui/Widgets and the Windows platform plugin. The original binary build options are recorded in the installed Qt Base SBOM.
+Modification of Qt and reverse engineering for debugging such modifications are permitted under the applicable LGPL terms. There is no gEngine restriction on those activities.

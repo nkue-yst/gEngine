@@ -1,0 +1,10 @@
+#pragma once
+#include <string_view>
+
+namespace gengine::editor
+{
+    // 実行ファイルへ埋め込み、インストール先に依存せず同じ初期ソースを生成する。
+    inline constexpr auto kProjectTemplate = std::string_view(R"glang(@GENGINE_PROJECT_TEMPLATE@)glang");
+    inline constexpr auto kGame2dTemplate = std::string_view(R"glang(@GENGINE_GAME2D_TEMPLATE@)glang");
+    inline constexpr auto kGame3dTemplate = std::string_view(R"glang(@GENGINE_GAME3D_TEMPLATE@)glang");
+}

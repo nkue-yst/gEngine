@@ -1,0 +1,87 @@
+// 2Dと3Dの集合を同じ操作で確認する。描画や時間進行を持たない接続用サンプル。
+struct Particle2d {
+    position: vec2;
+    velocity: vec2;
+    life: i32;
+    serial: u32;
+    active: bool;
+}
+struct Particle3d {
+    position: vec3;
+    velocity: vec3;
+    life: i32;
+}
+state particles2d: pool<Particle2d> = pool(128);
+state particles3d: pool<Particle3d> = pool(128);
+state next_serial: u32 = 0;
+
+// 各集合へ一個体を追加する。満杯ならpushはfalseを返す。
+export fn spawn() {
+    let added2d = particles2d.push(Particle2d {
+        position: vec2(f32(next_serial), -2.0),
+        velocity: vec2(1.0, 0.5),
+        life: 3,
+        serial: next_serial,
+        active: true
+    });
+    let added3d = particles3d.push(Particle3d {
+        position: vec3(f32(next_serial), 2.0, -3.0),
+        velocity: vec3(1.0, -0.5, 2.0),
+        life: 3
+    });
+    next_serial = next_serial + 1;
+}
+
+// 初期化は明示的に呼ぶ。VMのreset直後の集合は空になっている。
+export fn initialize() {
+    particles2d.clear();
+    particles3d.clear();
+    next_serial = 0;
+    spawn();
+    spawn();
+    spawn();
+}
+
+// 幅64の二まとまりを手動確認する。通常の生成処理を共用する。
+export fn initialize_batch() {
+    particles2d.clear();
+    particles3d.clear();
+    next_serial = 0;
+    let mut count: u32 = 0;
+    while count < 128 {
+        spawn();
+        count = count + 1;
+    }
+}
+
+// 一回の呼出しで位置と寿命を更新する。実時間の一フレームではない。
+export fn update() {
+    foreach p in particles2d {
+        p.position = p.position + p.velocity;
+        p.life = p.life - 1;
+    }
+    foreach p in particles3d {
+        p.position = p.position + p.velocity;
+        p.life = p.life - 1;
+    }
+}
+
+// 寿命を使い切った個体だけを削除する。削除後の行番号は固定IDではない。
+export fn remove_expired() {
+    foreach p in particles2d {
+        if p.life <= 0 { remove p; }
+    }
+    foreach p in particles3d {
+        if p.life <= 0 { remove p; }
+    }
+}
+
+// 診断とresetによる復帰を手動確認するため、実行時のゼロ除算を起こす。
+export fn fail() {
+    let divisor = i32(particles2d.len()) - i32(particles2d.len());
+    let invalid = 1 / divisor;
+}
+
+export fn main() -> i32 {
+    return 0;
+}

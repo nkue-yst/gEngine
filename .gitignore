@@ -1,0 +1,19 @@
+# Internal documentation and local agent instructions are not public artifacts.
+/docs/development/
+/AGENTS.md
+
+# Local workspace and generated files.
+/*.local.code-workspace
+/CMakeUserPresets.json
+/.vs/
+/.vscode/
+/build/
+/out/
+/tests/__pycache__/
+/cmake/__pycache__/
+/dist/
+/target/
+/language/**/target/
+/apps/Editor/**/bin/
+/apps/Editor/**/obj/
+*.user

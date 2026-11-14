@@ -1,0 +1,185 @@
+// 3Dゲーム状態の正本。X右・Y上・Z手前とし、ホストから入力と球の接触結果を受ける。
+struct Bullet {
+    previous: vec3;
+    position: vec3;
+    velocity: vec3;
+    life: f32;
+    hit: bool;
+}
+state shots: pool<Bullet> = pool(4096);
+state threats: pool<Bullet> = pool(4096);
+state player: vec3 = vec3(0.0, 2.0, 4.0);
+state previous_player: vec3 = vec3(0.0, 2.0, 4.0);
+state hp: i32 = 3;
+state enemy_hp: i32 = 30;
+state cooldown: f32 = 0.0;
+state enemy_cooldown: f32 = 0.5;
+state immunity: f32 = 0.0;
+state outcome: u32 = 0;
+state sounds: u32 = 0;
+state dropped: u32 = 0;
+
+// ホストの検証済み開始条件をreset後に受け取る。プリセットはこの後で適用する。
+state enemy_position: vec3 = vec3(0.0, 2.0, -4.0);
+state bounds_min: vec3 = vec3(-8.0, 0.5, -6.0);
+state bounds_max: vec3 = vec3(8.0, 6.0, 6.0);
+state move_speed: f32 = 5.0;
+state fire_interval: f32 = 0.1;
+state enemy_interval: f32 = 0.5;
+export fn configure_world(start: vec3, enemy: vec3, minimum: vec3, maximum: vec3) {
+    player = start;
+    previous_player = start;
+    enemy_position = enemy;
+    bounds_min = minimum;
+    bounds_max = maximum;
+}
+export fn configure_rules(player_health: i32, enemy_health: i32, speed: f32, interval: f32, hostile_interval: f32) {
+    hp = player_health;
+    enemy_hp = enemy_health;
+    move_speed = speed;
+    fire_interval = interval;
+    enemy_interval = hostile_interval;
+    enemy_cooldown = hostile_interval;
+}
+
+export fn initialize(preset: u32) {
+    // reset後に開始条件だけを適用する。結果そのものは設定しない。
+    if preset == 2 {
+        enemy_hp = 1;
+    }
+    if preset == 3 {
+        hp = 1;
+    }
+    if preset == 4 {
+        let mut i: u32 = 0;
+        while i < 1024 {
+            let p = vec3(f32(i % 64) * 0.25 - 8.0, 0.5 + f32(i / 256), f32((i / 64) % 4) - 4.0);
+            let added = threats.push(Bullet {previous: p, position: p, velocity: vec3(0.0, 0.0, 1.0), life: 10.0, hit: false});
+            if added == false {
+                dropped = dropped + 1;
+            }
+            i = i + 1;
+        }
+    }
+}
+
+export fn step(direction: vec3, fire: bool, dt: f32) {
+    // 入力方向で自機を進め、各軸の移動範囲へ収める。
+    sounds = 0;
+    previous_player = player;
+    player = player + direction * (move_speed * dt);
+    player = vec3(max(bounds_min.x, min(bounds_max.x, player.x)), max(bounds_min.y, min(bounds_max.y, player.y)), max(bounds_min.z, min(bounds_max.z, player.z)));
+    immunity = max(0.0, immunity - dt);
+    cooldown = max(0.0, cooldown - dt);
+    enemy_cooldown = enemy_cooldown - dt;
+    // 固定刻みの丸め誤差で発射を1tick遅らせない。
+    if fire && cooldown <= 0.000001 {
+        let added = shots.push(Bullet {previous: player, position: player, velocity: vec3(0.0, 0.0, -12.0), life: 3.0, hit: false});
+        if added {
+            sounds = sounds + 1;
+        }
+        else {
+            dropped = dropped + 1;
+        }
+        cooldown = fire_interval;
+    }
+    if enemy_cooldown <= 0.000001 {
+        // 高さと奥行きも含めて自機を狙う。重なった場合だけ+Zへ撃つ。
+        let delta = player - enemy_position;
+        let length = sqrt(dot(delta, delta));
+        let mut velocity = vec3(0.0, 0.0, 12.0);
+        if length > 0.0001 {
+            velocity = delta * (12.0 / length);
+        }
+        let added = threats.push(Bullet {previous: enemy_position, position: enemy_position, velocity: velocity, life: 3.0, hit: false});
+        if added == false {
+            dropped = dropped + 1;
+        }
+        enemy_cooldown = enemy_cooldown + enemy_interval;
+    }
+    // 接触判定が終わるまで行を詰め直さない。
+    foreach b in shots {
+        b.previous = b.position;
+        b.position = b.position + b.velocity * dt;
+        b.life = b.life - dt;
+    }
+    foreach b in threats {
+        b.previous = b.position;
+        b.position = b.position + b.velocity * dt;
+        b.life = b.life - dt;
+    }
+}
+
+export fn apply_hits(group: u32, first: u32, mask: u32) {
+    // 現行言語の整数除算でマスクを読む。削除は全結果の反映後にまとめる。
+    let mut bits = mask;
+    let mut row = first;
+    while bits > 0 {
+        if bits % 2 == 1 {
+            if group == 0 {
+                let mut b = shots.get(row);
+                b.hit = true;
+                shots.set(row, b);
+                enemy_hp = max_hp(enemy_hp - 1);
+            }
+            else {
+                let mut b = threats.get(row);
+                b.hit = true;
+                threats.set(row, b);
+                if immunity <= 0.000001 {
+                    hp = max_hp(hp - 1);
+                    immunity = 0.5;
+                    sounds = sounds + 2;
+                }
+            }
+        }
+        bits = bits / 2;
+        row = row + 1;
+    }
+}
+fn max_hp(value: i32) -> i32 {
+    if value < 0 {
+        return 0;
+    }
+    return value;
+}
+export fn finish_step() {
+    // 全命中の反映後に弾を回収し、同時撃破では自機の失敗を優先する。
+    foreach b in shots {
+        if b.hit || b.life <= 0.0 || b.position.x < bounds_min.x - 1.0 || b.position.x > bounds_max.x + 1.0 || b.position.y < bounds_min.y - 1.0 || b.position.y > bounds_max.y + 1.0 || b.position.z < bounds_min.z - 1.0 || b.position.z > bounds_max.z + 1.0 {
+            remove b;
+        }
+    }
+    foreach b in threats {
+        if b.hit || b.life <= 0.0 || b.position.x < bounds_min.x - 1.0 || b.position.x > bounds_max.x + 1.0 || b.position.y < bounds_min.y - 1.0 || b.position.y > bounds_max.y + 1.0 || b.position.z < bounds_min.z - 1.0 || b.position.z > bounds_max.z + 1.0 {
+            remove b;
+        }
+    }
+    if hp <= 0 {
+        outcome = 2;
+    }
+    else if enemy_hp <= 0 {
+        outcome = 1;
+    }
+}
+export fn player_position() -> vec3 {
+    return player;
+}
+export fn player_previous() -> vec3 {
+    return previous_player;
+}
+export fn player_hp() -> i32 {
+    return hp;
+}
+export fn target_hp() -> i32 {
+    return enemy_hp;
+}
+export fn result() -> u32 {
+    return outcome;
+}
+export fn audio_events() -> u32 {
+    return sounds;
+}
+export fn dropped_shots() -> u32 {
+    return dropped;
+}

@@ -1,0 +1,50 @@
+{
+  "format_version": 1,
+  "document_id": "scene-2d",
+  "game": "2d",
+  "settings": {
+    "bounds_min": [
+      -8,
+      -4.5
+    ],
+    "bounds_max": [
+      8,
+      4.5
+    ],
+    "player_hp": 3,
+    "enemy_hp": 30,
+    "move_speed": 5.0,
+    "fire_interval_seconds": 0.1
+  },
+  "objects": [
+    {
+      "id": "player",
+      "kind": "player_spawn",
+      "position": [
+        0,
+        -3
+      ],
+      "visual": null,
+      "audio": null
+    },
+    {
+      "id": "enemy",
+      "kind": "enemy_spawn",
+      "position": [
+        0,
+        3
+      ],
+      "fire_interval_seconds": 0.5,
+      "visual": null,
+      "audio": null
+    },
+    {
+      "id": "camera",
+      "kind": "game_camera",
+      "view_size": [
+        16,
+        9
+      ]
+    }
+  ]
+}

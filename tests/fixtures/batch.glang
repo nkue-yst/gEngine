@@ -1,0 +1,110 @@
+// 幅1・幅64・C++ホストで同じバイトコードを使う。境界をまたぐ全個体を照合する。
+struct Particle2d {
+    position: vec2;
+    velocity: vec2;
+    life: i32;
+    serial: u32;
+    active: bool;
+}
+struct Particle3d {
+    position: vec3;
+    velocity: vec3;
+    life: i32;
+}
+state particles2d: pool<Particle2d> = pool(129);
+state particles3d: pool<Particle3d> = pool(129);
+
+fn seed(count: u32) {
+    particles2d.clear();
+    particles3d.clear();
+    let mut i: u32 = 0;
+    while i < count {
+        let a = particles2d.push(Particle2d {
+            position: vec2(f32(i), -2.0), velocity: vec2(0.25, 0.5),
+            life: 3, serial: i, active: i % 2 != 0
+        });
+        let b = particles3d.push(Particle3d {
+            position: vec3(f32(i), 2.0, -3.0), velocity: vec3(0.25, -0.5, 2.0), life: 3
+        });
+        i = i + 1;
+    }
+}
+
+export fn initialize() { seed(129); }
+
+// 無効な個体のゼロ除算は実行しない。分岐のマスクと末尾の余りを同時に検査する。
+export fn update() {
+    foreach p in particles2d {
+        if p.active {
+            p.position = p.position + p.velocity;
+            p.life = 100 / i32(p.serial);
+        }
+        else {
+            p.life = -1;
+        }
+    }
+    foreach p in particles3d {
+        p.position = p.position + p.velocity;
+        p.life = p.life - 1;
+    }
+}
+
+export fn remove_expired() {
+    foreach p in particles2d {
+        if p.life < 0 { remove p; }
+    }
+    foreach p in particles3d {
+        if p.position.x < 64.0 { remove p; }
+    }
+}
+
+// 計算と削除を各件数で通し、全フィールドを独立したscalarの期待値と比較する。
+fn check(count: u32) -> i32 {
+    seed(count);
+    update();
+    if particles2d.len() != count || particles3d.len() != count { return 1; }
+    let mut i: u32 = 0;
+    while i < count {
+        let p = particles2d.get(i);
+        let q = particles3d.get(i);
+        if p.serial != i || p.active != (i % 2 != 0) { return 2; }
+        if p.velocity.x != 0.25 || p.velocity.y != 0.5 { return 3; }
+        if p.active {
+            if p.position.x != f32(i) + 0.25 || p.position.y != -1.5 || p.life != 100 / i32(i) { return 4; }
+        }
+        else {
+            if p.position.x != f32(i) || p.position.y != -2.0 || p.life != -1 { return 5; }
+        }
+        if q.position.x != f32(i) + 0.25 || q.position.y != 1.5 || q.position.z != -1.0 || q.life != 2 { return 6; }
+        if q.velocity.x != 0.25 || q.velocity.y != -0.5 || q.velocity.z != 2.0 { return 7; }
+        i = i + 1;
+    }
+    remove_expired();
+    if particles2d.len() != count / 2 { return 8; }
+    i = 0;
+    while i < particles2d.len() {
+        let p = particles2d.get(i);
+        if p.active == false || p.serial % 2 == 0 || p.position.x != f32(p.serial) + 0.25 { return 9; }
+        i = i + 1;
+    }
+    let mut expected: u32 = 0;
+    if count > 64 { expected = count - 64; }
+    if particles3d.len() != expected { return 10; }
+    i = 0;
+    while i < particles3d.len() {
+        if particles3d.get(i).position.x < 64.0 { return 11; }
+        i = i + 1;
+    }
+    return 0;
+}
+
+export fn main() -> i32 {
+    if check(0) != 0 { return 100; }
+    if check(1) != 0 { return 101; }
+    if check(63) != 0 { return 163; }
+    if check(64) != 0 { return 164; }
+    if check(65) != 0 { return 165; }
+    if check(127) != 0 { return 227; }
+    if check(128) != 0 { return 228; }
+    return check(129);
+}
