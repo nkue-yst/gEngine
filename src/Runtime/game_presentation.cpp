@@ -28,11 +28,12 @@ namespace gengine
             }
             ~Picture()
             {
+                // マテリアルの破棄結果にかかわらず、テクスチャの解放にも進む。
                 if (material.id != 0) {
-                    renderer.DestroyMaterial(material);
+                    static_cast<void>(renderer.DestroyMaterial(material));
                 }
                 if (texture.id != 0) {
-                    renderer.DestroyTexture(texture);
+                    static_cast<void>(renderer.DestroyTexture(texture));
                 }
             }
 

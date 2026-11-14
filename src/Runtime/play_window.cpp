@@ -95,14 +95,15 @@ namespace gengine
             rengine::Mesh mesh{};
             ~VisualResource()
             {
+                // 後続のリソースも解放するため、破棄の戻り値は使わない。
                 if (material.id != 0) {
-                    renderer->DestroyMaterial(material);
+                    static_cast<void>(renderer->DestroyMaterial(material));
                 }
                 if (texture.id != 0) {
-                    renderer->DestroyTexture(texture);
+                    static_cast<void>(renderer->DestroyTexture(texture));
                 }
                 if (mesh.id != 0) {
-                    renderer->DestroyMesh(mesh);
+                    static_cast<void>(renderer->DestroyMesh(mesh));
                 }
             }
         };
@@ -1698,7 +1699,8 @@ namespace gengine
             impl_->Draw(target, width, height);
             Check(impl_->renderer->ReadTarget(target, pixels));
         } catch (...) {
-            impl_->renderer->DestroyTarget(target);
+            // 読み戻しの失敗を伝えるため、後片付けの結果で元の例外を上書きしない。
+            static_cast<void>(impl_->renderer->DestroyTarget(target));
             throw;
         }
         Check(impl_->renderer->DestroyTarget(target));
