@@ -1,0 +1,125 @@
+name: Windows x64 Release
+
+on:
+  push:
+    tags:
+      - 'v[0-9]+.[0-9]+.[0-9]+'
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Existing release tag (for example, v0.1.0)
+        required: true
+        type: string
+
+concurrency:
+  group: release-${{ inputs.tag || github.ref_name }}
+  cancel-in-progress: true
+
+jobs:
+  release:
+    if: github.event.deleted != true
+    runs-on: windows-2022
+    timeout-minutes: 45
+    permissions:
+      contents: write
+    env:
+      RELEASE_TAG: ${{ inputs.tag || github.ref_name }}
+
+    steps:
+      - name: Validate tag
+        shell: pwsh
+        run: |
+          if ($env:RELEASE_TAG -cnotmatch '\Av[0-9]+\.[0-9]+\.[0-9]+\z') {
+            throw 'Expected a tag in the form vMAJOR.MINOR.PATCH.'
+          }
+
+      - name: Check out the tagged source and its dependencies
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          ref: ${{ github.event_name == 'push' && github.sha || format('refs/tags/{0}', inputs.tag) }}
+          submodules: recursive
+          persist-credentials: false
+
+      - name: Set up Python
+        uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
+        with:
+          python-version: '3.11'
+
+      - name: Set up Rust from gLang's toolchain file
+        working-directory: components/gLang
+        shell: pwsh
+        run: cargo --version
+
+      - name: Download Qt SDK and corresponding source
+        shell: pwsh
+        run: |
+          $qtSdk = Join-Path $env:RUNNER_TEMP 'qt-6.12.0'
+          $qtArchive = Join-Path $env:RUNNER_TEMP 'qtbase.7z'
+          $qtSource = Join-Path $env:RUNNER_TEMP 'qtbase-everywhere-src-6.12.0.tar.xz'
+          $qtRepository = 'https://download.qt.io/online/qtsdkrepository/windows_x86/desktop/qt6_6120/qt6_6120_msvc2022_64/qt.qt6.6120.win64_msvc2022_64'
+          $qtPackage = '6.12.0-0-202609280346qtbase-Windows-Windows_11_24H2-MSVC2022-Windows-Windows_11_24H2-X86_64.7z'
+          $qtSourceUrl = "https://download.qt.io/official_releases/qt/6.12/6.12.0/submodules/$(Split-Path -Leaf $qtSource)"
+
+          # 配布に使うバイナリーを固定し、対応する原文ソースはCMakeで照合する。
+          curl.exe --fail --location --retry 3 --silent --show-error --output "$qtArchive" "$qtRepository/$qtPackage"
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          if ((Get-FileHash -LiteralPath $qtArchive).Hash -ne '219d1b86def3be418e31d704572bc4acc91b2ec373c65595c9fb12b42bf098dc') {
+            throw 'Qt SDK archive checksum mismatch.'
+          }
+          curl.exe --fail --location --retry 3 --silent --show-error --output "$qtSource" "$qtSourceUrl"
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+          New-Item -ItemType Directory -Path $qtSdk | Out-Null
+          & "$env:ProgramFiles/7-Zip/7z.exe" x -y -bso0 "-o$qtSdk" "$qtArchive"
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          "GENGINE_CI_QT_SDK=$qtSdk" >> $env:GITHUB_ENV
+          "GENGINE_CI_QT_SOURCE=$qtSource" >> $env:GITHUB_ENV
+
+      - name: Build and package Windows x64 Release
+        shell: pwsh
+        run: |
+          cmake --preset windows "-DCMAKE_PREFIX_PATH=$env:GENGINE_CI_QT_SDK" "-DGENGINE_QT_SOURCE_ARCHIVE=$env:GENGINE_CI_QT_SOURCE" -DGENGINE_BUILD_TESTS=OFF
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          cmake --build --preset release --target gengine_distribution --parallel 4
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+          # 版とコミットを照合し、展開先で再生成するショートカットだけをZIPから除く。
+          $version = $env:RELEASE_TAG.Substring(1)
+          $distribution = "out/distribution/gEngine-$version-Release"
+          $manifest = Get-Content -LiteralPath "$distribution/distribution.json" -Raw | ConvertFrom-Json
+          $revision = git rev-parse HEAD
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          if ($manifest.version -cne $version -or $manifest.source_revision -cne $revision -or $manifest.source_modified -ne $false) {
+            throw 'Distribution manifest does not match the tagged source.'
+          }
+          $zip = Join-Path $env:RUNNER_TEMP "gEngine-$env:RELEASE_TAG-windows-x64.zip"
+          tar.exe -a -cf "$zip" --exclude=gEngine.lnk -C "$distribution" .
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          "GENGINE_CI_ZIP=$zip" >> $env:GITHUB_ENV
+
+      - name: Attach the ZIP to the GitHub Release
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          # ビルド中にタグが動いた場合は、古い成果物を公開しない。
+          $ref = "refs/tags/$env:RELEASE_TAG"
+          $refs = @(git ls-remote origin "$ref" "$ref^{}")
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          $tagCommit = if ($refs.Count -gt 0) { ($refs[-1] -split '\s+')[0] }
+          $revision = git rev-parse HEAD
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          if ($tagCommit -cne $revision) {
+            throw 'The remote tag no longer points to the built commit.'
+          }
+
+          # 既存Releaseでは本文を保持し、同名ZIPだけを差し替える。
+          gh release view "$env:RELEASE_TAG" --repo "$env:GITHUB_REPOSITORY" --json tagName *> $null
+          if ($LASTEXITCODE -eq 0) {
+            gh release upload "$env:RELEASE_TAG" "$env:GENGINE_CI_ZIP" --repo "$env:GITHUB_REPOSITORY" --clobber
+          }
+          else {
+            $notes = 'Windows x64 用の配布 ZIP です。展開して `Editor/gengine_editor.exe` を起動してください。ショートカットは展開先で `Initialize-Distribution.ps1` を実行して生成できます。'
+            gh release create "$env:RELEASE_TAG" "$env:GENGINE_CI_ZIP" --repo "$env:GITHUB_REPOSITORY" --verify-tag --title "gEngine $env:RELEASE_TAG" --notes "$notes"
+          }
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }

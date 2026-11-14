@@ -17,6 +17,8 @@ gEngine と gLang の版は別です。gEngine Ver.0.1.0 は gLang / gVM Ver.0.2
 
 ## 配置済みの開発版を使う
 
+[GitHub Releases](https://github.com/nkue-yst/gEngine/releases) から対象バージョンの Windows x64 用 ZIP を取得し、任意のフォルダーに展開します。
+
 Windows x64 のデスクトップ、D3D12 対応 GPU、音声出力先、Microsoft Visual C++ 2022 x64 の実行ランタイムが必要です。配置済みの実行物を使うだけなら、Visual Studio、Rust、CMake、Python、Qt SDK は不要です。ゲーム用フォルダーを含め、必要なファイルをまとめて保持してください。
 
 | 場所 | 用途 |
@@ -29,7 +31,7 @@ Windows x64 のデスクトップ、D3D12 対応 GPU、音声出力先、Microso
 | `docs/user/`、`components/gLang/` | 本体の利用手順と言語の仕様・参照例。ソース一式のビルド環境ではない |
 | `distribution.json` | 配置時の版・構成・元のコミット・追跡ファイルの未コミット変更の有無と、配置ファイルの SHA-256 一覧 |
 
-フォルダーを移動したら、移動先で次のコマンドを実行して `gEngine.lnk` を再生成します。ショートカットは生成時の絶対パスを参照します。再生成せずに古いリンクを使わないでください。実体 EXE の直接起動と MCP 起動にはショートカットを使いません。
+ショートカットを使う場合は、ZIP の展開先で次のコマンドを実行して `gEngine.lnk` を生成します。ショートカットは生成時の絶対パスを参照するため、フォルダーを移動したら移動先で再生成してください。実体 EXE の直接起動と MCP 起動にはショートカットを使いません。
 
 ```powershell
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File ./Initialize-Distribution.ps1
