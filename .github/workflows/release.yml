@@ -48,7 +48,14 @@ jobs:
       - name: Set up Rust from gLang's toolchain file
         working-directory: components/gLang
         shell: pwsh
-        run: cargo --version
+        run: |
+          # ランナーのrustupでも扱えるよう、gLangが指定した版とターゲットを個別に渡す。
+          $channel = Select-String -LiteralPath rust-toolchain.toml -Pattern '^channel\s*=\s*"([0-9]+\.[0-9]+\.[0-9]+)-x86_64-pc-windows-msvc"$'
+          if (-not $channel) { throw 'Expected the pinned Windows x64 Rust toolchain in gLang.' }
+          $version = $channel.Matches[0].Groups[1].Value
+          rustup toolchain install "$version" --profile minimal --target x86_64-pc-windows-msvc
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          "RUSTUP_TOOLCHAIN=$version" >> $env:GITHUB_ENV
 
       - name: Download Qt SDK and corresponding source
         shell: pwsh
